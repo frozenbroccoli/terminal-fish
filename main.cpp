@@ -1,9 +1,7 @@
-#include <iostream>
-#include <chrono>
-#include <thread>
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include "include/constants.hpp"
+#include "include/colors.hpp"
 
 
 void play_startup_animation(int term_width, int term_height) {
@@ -11,35 +9,58 @@ void play_startup_animation(int term_width, int term_height) {
 	int center_y = term_height / 2;
 
 	action::clear();
-	action::go_to(center_y, center_x);
-	std::cout << "\x1B[1;37m";
+	action::hide_cursor();
+	action::go_to(center_y, center_x - 7);
+	action::bold();
 
-	constexpr auto sleep = [](int ms) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(ms));
-	};
+	action::set_blinking();
+	action::flush(object::CURSOR, 1000);
 
-	constexpr auto flush = [sleep](const char* text, int ms) {
-		std::cout << text << std::flush; sleep(ms);
-	};
+	action::backspace();
+	action::color(ForegroundColor::BRIGHT_MAGENTA, BackgroundColor::DEFAULT);
+	action::flush(object::CURSOR, 1000);
 
-	flush("f", 200);
-	flush("i", 200);
-	flush("s", 200);
-	flush("h", 200);
-	flush(" ", 500);
+	action::write_char("~", object::CURSOR, 200);
+	action::write_char("~", object::CURSOR, 200);
+	action::write_char("~", object::CURSOR, 200);
+	action::write_char(" ", object::CURSOR, 1000);
 
-	std::cout << "\x1B[3;37;44m";
+	action::backspace();
+	action::color(ForegroundColor::BRIGHT_BLUE, BackgroundColor::DEFAULT);
+	action::flush(object::CURSOR, 1000);
 
-	flush("t", 200);
-	flush("e", 200);
-	flush("r", 200);
-	flush("m", 200);
-	flush("i", 200);
-	flush("n", 200);
-	flush("a", 200);
-	flush("l", 200);
+	action::write_char("f", object::CURSOR, 200);
+	action::write_char("i", object::CURSOR, 200);
+	action::write_char("s", object::CURSOR, 200);
+	action::write_char("h", object::CURSOR, 200);
+	action::write_char(" ", object::CURSOR, 1000);
 
-	std::cout << "\x1B[0m" << std::endl;
+	action::italic();
+	action::color(ForegroundColor::BRIGHT_WHITE, BackgroundColor::BLUE);
+
+	action::write_char("t", object::CURSOR, 200);
+	action::write_char("e", object::CURSOR, 200);
+	action::write_char("r", object::CURSOR, 200);
+	action::write_char("m", object::CURSOR, 200);
+	action::write_char("i", object::CURSOR, 200);
+	action::write_char("n", object::CURSOR, 200);
+	action::write_char("a", object::CURSOR, 200);
+	action::write_char("l", object::CURSOR, 200);
+
+	action::color(ForegroundColor::BRIGHT_WHITE, BackgroundColor::DEFAULT);
+	action::write_char(" ", object::CURSOR, 1000);
+
+	action::backspace();
+	action::color(ForegroundColor::BRIGHT_MAGENTA, BackgroundColor::DEFAULT);
+	action::flush(object::CURSOR, 1000);
+
+	action::write_char("~", object::CURSOR, 200);
+	action::write_char("~", object::CURSOR, 200);
+	action::write_char("~", object::CURSOR, 3000);
+
+	action::unset_blinking();
+	action::reset_style();
+	action::show_cursor();
 	action::clear();
 }
 
